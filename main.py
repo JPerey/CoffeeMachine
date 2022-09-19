@@ -55,6 +55,8 @@ def calculate(choice):
 
     sum = quarter_amount + dime_amount + nickle_amount + penny_amount
     if sum >= MENU[choice]['cost']:
+        difference = round(sum - MENU[choice]['cost'], 3)
+        print(f"here is your change: $ {difference}")
         return sum
     else:
         print("sorry that's not enough money. money refunded.")
@@ -77,6 +79,14 @@ def give_coffee(choice):
     print(f"here is your {choice} ☕️. enjoy!")
 
 
+def enough_resources():
+    for ingredient in resources:
+        if resources[ingredient] <= 0:
+            print(f"I apologize, the coffee machine is out of {ingredient}.")
+            return False
+    return True
+
+
 def start():
     global bank
     global resources
@@ -84,7 +94,7 @@ def start():
     while coffee_choice_true != True:
         coffee_lover_choice = input(
             "Welcome to coffee machine. \nWhat would you like? (espresso/latte/cappuccino/report): ").lower()
-        if coffee_lover_choice != "espresso" and coffee_lover_choice != "latte" and coffee_lover_choice != "coffee" and coffee_lover_choice != "report":
+        if coffee_lover_choice != "espresso" and coffee_lover_choice != "latte" and coffee_lover_choice != "cappuccino" and coffee_lover_choice != "report":
             print("incorrect input: only input espresso, latte, cappuccino or report")
         else:
             coffee_choice_true = True
@@ -92,9 +102,13 @@ def start():
     if coffee_lover_choice == "report":
         report()
         start()
-    elif coffee_lover_choice == "espresso":
+    else:
         bank = bank + calculate(coffee_lover_choice)
         new_resources(coffee_lover_choice)
+        can_make = enough_resources()
+        if can_make == False:
+            print("turning off for refill process.")
+            exit()
         give_coffee(coffee_lover_choice)
         start()
 
